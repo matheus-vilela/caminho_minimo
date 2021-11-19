@@ -110,6 +110,8 @@ def dijkstra(grafo, origem, destino):
     Q.append(i)
 
   dist[origem] = 0 
+  print('\n\nCalculando...')
+
   try:
     while len(Q) != 0:
 
@@ -137,7 +139,7 @@ def dijkstra(grafo, origem, destino):
     
     fim = time.time()
     executionTime = float(fim-inicio)
-    print('\nRESUMO: \nCodigo: DIJKSTRA\nPercurso: ', percurso, '\nCusto total: ',custo, '\nTempo de execução: ', executionTime,'s')
+    print('\nRESUMO: \nCodigo: DIJKSTRA\nPercurso: ', percurso, '\nCusto total: ',custo, '\nTempo de execução: ', executionTime)
   except Exception as erro:
     print("\n\nNão foi possivel encontrar o percurso\n\n")
 
@@ -156,14 +158,19 @@ def bellmanFord(grafo, origem, destino):
       pred.append(None)
 
     dist[origem] = 0 
+    print('\n\nCalculando...')
 
     try:
-      for _ in range(totalVertices-1):
+      for i in range(totalVertices-1):
+        melhor = 0
         for j in range(len(grafo)):
-          if dist[grafo[j][1]] > ( 0 if dist[grafo[j][0]] == math.inf else dist[grafo[j][0]]) + grafo[j][2]:
-            dist[grafo[j][1]] = ( 0 if dist[grafo[j][0]] == math.inf else dist[grafo[j][0]]) + grafo[j][2]
+          if dist[grafo[j][1]] > dist[grafo[j][0]] + grafo[j][2]:
+            dist[grafo[j][1]] =  dist[grafo[j][0]] + grafo[j][2]
             pred[grafo[j][1]] = grafo[j][0]
-
+            melhor = 1
+        
+        if melhor == 0:
+          break
 
       custo = dist[destino]
 
@@ -174,30 +181,33 @@ def bellmanFord(grafo, origem, destino):
       
       fim = time.time()
       executionTime = float(fim-inicio)
-      print('\n\nRESUMO: \nCodigo: BELLMANFORD\nPercurso: ', percurso, '\nCusto total: ',custo, '\nTempo de execução: ', executionTime,'s')
+      print('\n\nRESUMO: \nCodigo: BELLMANFORD\nPercurso: ', percurso, '\nCusto total: ',custo, '\nTempo de execução: ', executionTime)
     
     except Exception as erro:
       print("\n\nNão foi possivel encontrar o percurso\n\n")
 
+
 def floydWarshall(grafo, origem, destino):
   inicio = time.time()
-
   totalVertices = int(grafo[0][0])
   del(grafo[0])
 
   dist = []
   pred = []
 
-  for _ in range(totalVertices):
-    dist.append([None,None,None,None,None])
-    pred.append([None,None,None,None,None])
-
   try:
+    for _ in range(totalVertices):
+      dist.append([None] * totalVertices)
+      pred.append([None] * totalVertices)
+
+    print('\n\nCalculando...')
+
     for i in range(totalVertices):
       for j in range(totalVertices):
         if i == j:
           dist[i][j] = 0
           pred[i][j] = None
+          
         else:
           caminho = None
           for item in range(len(grafo)):
@@ -205,19 +215,18 @@ def floydWarshall(grafo, origem, destino):
               caminho = item
         
           if caminho != None:
-            dist[i][j] = grafo[item][2]
+            dist[i][j] = grafo[caminho][2]
             pred[i][j] = i    
           else:
             dist[i][j] = math.inf
-            pred[i][j] = None         
+            pred[i][j] = None  
 
-    for i in range(totalVertices):
-      for j in range(totalVertices):
-        for k in range(totalVertices):
-          if dist[j][k] > dist[j][i] + dist[i][j]:
-            dist[j][k] = dist[j][i] + dist[i][j]
-            pred[j][k] = dist[i][j]
-
+    for k in range(totalVertices):
+      for i in range(totalVertices):
+        for j in range(totalVertices):
+          if dist[i][j] > dist[i][k] + dist[k][j]:
+            dist[i][j] = dist[i][k] + dist[k][j]
+            pred[i][j] = pred[k][j]
 
     custo = dist[origem][destino]
 
@@ -228,8 +237,16 @@ def floydWarshall(grafo, origem, destino):
     
     fim = time.time()
     executionTime = float(fim-inicio)
-    print('\n\nRESUMO: \nCodigo: FLOYDWARSHALL\nPercurso: ', percurso, '\nCusto total: ',custo, '\nTempo de execução: ', executionTime,'s')
-  
+    print('\n\nRESUMO: \nCodigo: FLOYDWARSHALL\nPercurso: ', percurso, '\nCusto total: ',custo, '\nTempo de execução: ', executionTime)
+
+    # print('\nDIST')
+    # for _ in dist:
+    #   print(_) 
+
+    # print('\nPRED')
+    # for _ in pred:
+    #   print(_) 
+ 
   except Exception as erro:
     print("\n\nNão foi possivel encontrar o percurso\n\n")
 
