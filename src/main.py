@@ -71,72 +71,63 @@ def menu():
             if origem < 0 or origem > int(grafo[0][0]) - 1 or destino < 0 or destino > int(grafo[0][0]) - 1 or origem == destino:
               print('Origem ou destino inválido.')
               
+          arr = []
+          for _ in grafo:
+            arr.append(_)
+
           if codigo == 1:
-            dijkstra(grafo, origem, destino)
+            dijkstra(arr, origem, destino)
             input('\n >>>> Aperte ENTER para continuar <<<<\n')
           elif codigo == 2:
-            bellmanFord(grafo, origem, destino)
+            bellmanFord(arr, origem, destino)
             input('\n >>>> Aperte ENTER para continuar <<<<\n')
           elif codigo == 3:
-            floydWarshall(grafo, origem, destino)
+            floydWarshall(arr, origem, destino)
             input('\n >>>> Aperte ENTER para continuar <<<<\n')
           elif codigo == 4:
             break
           else:
             print('Opcao inválida!!')
+
         elif codigo == 4:
           break
         else:
           print('Opcao inválida!!')
 
-def dijkstra(arr, origem, destino):
+def dijkstra(grafo, origem, destino):
   inicio = time.time()
 
-  grafo = []
-  for _ in arr:
-    grafo.append(_)
-    
   totalVertices = int(grafo[0][0])
   del(grafo[0])
 
   dist = []
   pred = []
-  listaVertices = []
-  dist.clear()
-  pred.clear()
+  Q = [] 
 
   for i in range(totalVertices):
     dist.append(math.inf)
     pred.append(None)
-    listaVertices.append(i)
+    Q.append(i)
 
-  dist[origem] = 0
-
+  dist[origem] = 0 
   try:
-    while len(listaVertices)  != 0:
-      verticeMenorDistancia = None
-      menorDistancia = math.inf
+    while len(Q) != 0:
 
-      for i in range(len(listaVertices)):
-        if dist[listaVertices[i]] < menorDistancia:
-          menorDistancia = dist[listaVertices[i]]
-          verticeMenorDistancia = listaVertices[i]
+      u = Q[0]
+      menor = math.inf
+      for q in Q:
+        if menor > dist[q]:
+          u = q
+          menor = dist[q]
 
-      del(listaVertices[listaVertices.index(verticeMenorDistancia)])
-      
-      listaArestas = []
-      for caminho in grafo:
-        if caminho[0] == verticeMenorDistancia:
-          listaArestas.append(caminho)
+      del(Q[Q.index(u)])
 
-      for i in range(len(listaArestas)):
-        destin = listaArestas[i][1]
-        peso = listaArestas[i][2]
-
-        if dist[destin] > dist[verticeMenorDistancia] + peso:
-          dist[destin] = dist[verticeMenorDistancia] + peso
-          pred[destin] = verticeMenorDistancia
-
+      for adjacente in range(len(grafo)):
+        if grafo[adjacente][0] == u:
+          if dist[grafo[adjacente][1]] > ( 0 if dist[u] == math.inf else dist[u]) + grafo[adjacente][2]:
+            dist[grafo[adjacente][1]] = ( 0 if dist[u] == math.inf else dist[u]) + grafo[adjacente][2]
+            pred[grafo[adjacente][1]] = u
+    
     custo = dist[destino]
 
     percurso = []
@@ -146,16 +137,13 @@ def dijkstra(arr, origem, destino):
     
     fim = time.time()
     executionTime = float(fim-inicio)
-    print('\n\nRESUMO: \nCodigo: DIJKSTRA\nPercurso: ', percurso, '\nCusto total: ',custo, '\nTempo de execução: ', executionTime,'s')
+    print('\nRESUMO: \nCodigo: DIJKSTRA\nPercurso: ', percurso, '\nCusto total: ',custo, '\nTempo de execução: ', executionTime,'s')
   except Exception as erro:
     print("\n\nNão foi possivel encontrar o percurso\n\n")
 
 
-def bellmanFord(arr, origem, destino):
+def bellmanFord(grafo, origem, destino):
     inicio = time.time()
-    grafo = []
-    for _ in arr:
-      grafo.append(_)
       
     totalVertices = int(grafo[0][0])
     del(grafo[0])
@@ -197,12 +185,9 @@ def bellmanFord(arr, origem, destino):
     except Exception as erro:
       print("\n\nNão foi possivel encontrar o percurso\n\n")
 
-def floydWarshall(arr, origem, destino):
+def floydWarshall(grafo, origem, destino):
   inicio = time.time()
-  grafo = []
-  for _ in arr:
-    grafo.append(_)
-    
+
   totalVertices = int(grafo[0][0])
   del(grafo[0])
 
