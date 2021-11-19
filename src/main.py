@@ -144,32 +144,26 @@ def dijkstra(grafo, origem, destino):
 
 def bellmanFord(grafo, origem, destino):
     inicio = time.time()
-      
+
     totalVertices = int(grafo[0][0])
     del(grafo[0])
 
     dist = []
     pred = []
-    dist.clear()
-    pred.clear()
 
     for i in range(totalVertices):
       dist.append(math.inf)
       pred.append(None)
 
-    dist[origem] = 0
+    dist[origem] = 0 
 
     try:
-      for i in range(totalVertices):
-        melhor = 0
+      for _ in range(totalVertices-1):
         for j in range(len(grafo)):
-          if dist[grafo[j][1]] > dist[grafo[j][0]] + grafo[j][2]:
-            dist[grafo[j][1]] = dist[grafo[j][0]] + grafo[j][2]
+          if dist[grafo[j][1]] > ( 0 if dist[grafo[j][0]] == math.inf else dist[grafo[j][0]]) + grafo[j][2]:
+            dist[grafo[j][1]] = ( 0 if dist[grafo[j][0]] == math.inf else dist[grafo[j][0]]) + grafo[j][2]
             pred[grafo[j][1]] = grafo[j][0]
-            melhor = 1
-        
-        if melhor == 0:
-          break
+
 
       custo = dist[destino]
 
